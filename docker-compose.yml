@@ -1,0 +1,40 @@
+# version: "3.8"
+
+services:
+  webapp:
+    image: robbehogent/webapp
+    ports:
+      - "3000:3000"
+    container_name: webapp
+    environment:
+      MYSQL_URL: mysql://user:password@database:3306/animals
+    depends_on:
+      - database
+    volumes:
+      - ./database:/app/database
+    restart: always
+
+  database:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: animals
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: always
+
+  test:
+    image: robbehogent/webapp
+    depends_on:
+      - webapp
+    environment:
+      - API_URL=http://webapp:3000
+    command: yarn test
+    volumes:
+      - ./tests:/app/tests
+
+volumes:
+  mysql_data:
