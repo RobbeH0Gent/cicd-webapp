@@ -39,5 +39,5 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          push: true
           tags: robbehogent/webapp:latest
+          push: true
